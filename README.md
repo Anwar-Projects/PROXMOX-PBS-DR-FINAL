@@ -1,3 +1,23 @@
+README.md
+
+GitHub-ready documentation covering:
+Architecture
+Script purpose
+Recovery order
+Operational intent
+You can expand this later, but it’s already usable as-is.
+
+🧭 How to Upload to GitHub (Quick)
+On your local machine:
+unzip proxmox-pbs-dr-kit-final.zip
+cd proxmox-pbs-dr-kit-final
+git init
+git add .
+git commit -m "Initial Proxmox PBS Disaster Recovery kit"
+git branch -M main
+git remote add origin https://github.com/<your-username>/proxmox-pbs-dr-kit.git
+git push -u origin main
+
 # proxmox-pbs-dr
 This repository documents and automates a **dual-PBS disaster recovery architecture**
 proxmox-pbs-dr/
