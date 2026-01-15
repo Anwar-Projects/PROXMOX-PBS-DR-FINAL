@@ -10,3 +10,24 @@ proxmox-pbs-dr/
 │   └── pbs-policy-mirror.cron
 └── docs/
     └── PROXMOX-DR-RUNBOOK-1PAGE.pdf
+
+
+# Proxmox Backup Server – Disaster Recovery (PBS DR)
+
+This repository documents and automates a **dual Proxmox Backup Server (PBS)**
+disaster-recovery setup.
+
+If you are reading this after a long time:
+👉 **Start here. Follow the steps in order.**
+
+---
+
+## 🧠 High-Level Architecture (Very Important)
+
+Proxmox VE
+│
+▼ (scheduled backup jobs)
+PBS-MAIN (pbs-backups, Synology storage)
+│
+▼ (scheduled pull sync)
+PBS-TRUENAS (pbs-replica, TrueNAS storage)
