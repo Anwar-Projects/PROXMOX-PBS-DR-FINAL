@@ -1,0 +1,18 @@
+# Shellcheck configuration for Proxmox PBS DR
+# https://github.com/koalaman/shellcheck/wiki
+
+# Shell dialect
+shell=bash
+
+# Disable specific checks:
+# SC1090: Can't follow non-constant source
+# SC1091: Not following sourced file  
+# SC2034: Variable appears unused
+# SC2154: Variable is referenced but not assigned
+disable=SC1090,SC1091,SC2034,SC2154
+
+# Enable optional checks
+enable=check-extra-masked-returns,check-set-e-suppressed
+
+# External sources
+external-sources=true
