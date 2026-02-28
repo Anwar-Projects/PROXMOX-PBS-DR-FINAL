@@ -1,0 +1,10 @@
+# PBS Policy Mirror Cron Job
+# Mirrors retention and verify policies from PBS-MAIN to PBS-TRUENAS
+# Place this file in /etc/cron.d/pbs-policy-mirror
+
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Run policy mirror daily at 03:00
+# Logs to /var/log/pbs-mirror.log
+0 3 * * * root /opt/proxmox-pbs-dr/scripts/mirror-pbs-main-policy-to-pbs-truenas.sh >> /var/log/pbs-mirror.log 2>&1
