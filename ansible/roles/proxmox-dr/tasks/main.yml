@@ -1,0 +1,83 @@
+---
+- name: Install Proxmox PBS DR package
+  apt:
+    deb: "{{ proxmox_dr_package_url | default(omit) }}"
+    name: "{{ proxmox_dr_package_name | default('proxmox-pbs-dr') }}"
+    state: present
+  when: proxmox_dr_install_package | default(true)
+
+- name: Create configuration directory
+  file:
+    path: /etc/proxmox-dr
+    state: directory
+    mode: '0755'
+
+- name: Create state directory
+  file:
+    path: /var/lib/proxmox-dr
+    state: directory
+    mode: '0750'
+    owner: root
+    group: root
+
+- name: Deploy configuration file
+  template:
+    src: config.yaml.j2
+    dest: /etc/proxmox-dr/config.yaml
+    mode: '0640'
+    owner: root
+    group: root
+  notify: reload proxmox-dr
+
+- name: Deploy environment-specific config
+  template:
+    src: "{{ proxmox_dr_environment }}.yaml.j2"
+    dest: "/etc/proxmox-dr/config.yaml"
+    mode: '0640'
+  when: proxmox_dr_environment is defined
+
+- name: Install systemd service
+  template:
+    src: proxmox-dr.service.j2
+    dest: /etc/systemd/system/proxmox-dr.service
+    mode: '0644'
+  notify:
+    - reload systemd
+    - restart proxmox-dr
+
+- name: Enable and start service
+  systemd:
+    name: proxmox-dr
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Configure cron jobs
+  template:
+    src: cron.j2
+    dest: /etc/cron.d/proxmox-dr
+    mode: '0644'
+  when: proxmox_dr_cron_enabled | default(true)
+
+- name: Configure log rotation
+  template:
+    src: logrotate.j2
+    dest: /etc/logrotate.d/proxmox-dr
+    mode: '0644'
+
+- name: Deploy Prometheus exporter service
+  template:
+    src: proxmox-dr-exporter.service.j2
+    dest: /etc/systemd/system/proxmox-dr-exporter.service
+    mode: '0644'
+  when: proxmox_dr_enable_metrics | default(true)
+  notify:
+    - reload systemd
+    - restart proxmox-dr-exporter
+
+- name: Enable metrics exporter
+  systemd:
+    name: proxmox-dr-exporter
+    enabled: true
+    state: started
+  when: proxmox_dr_enable_metrics | default(true)

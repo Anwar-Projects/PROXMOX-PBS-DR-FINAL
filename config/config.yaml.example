@@ -1,0 +1,64 @@
+# Proxmox DR Configuration
+# Place this file at /etc/proxmox-dr/config.yaml
+
+environment: site-a
+debug: false
+log_level: INFO
+log_format: json
+
+# PBS Main Server Configuration
+pbs_main:
+  name: pbs-main
+  host: 192.168.1.100
+  port: 8007
+  datastore: pbs-backups
+  username: root@pam
+  # Use either password or api_token (recommended)
+  # api_token: "root@pam!dr-token"
+  verify_ssl: true
+
+# PBS DR Server Configuration
+pbs_dr:
+  name: pbs-dr
+  host: 192.168.1.101
+  port: 8007
+  datastore: pbs-replica
+  username: root@pam
+  # api_token: "root@pam!dr-token"
+  verify_ssl: true
+
+# Sync Job Configuration
+sync:
+  enabled: true
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  source_datastore: pbs-backups
+  target_datastore: pbs-replica
+  delete_missing: false
+
+# Retention Policy Configuration
+retention:
+  keep_last: 7
+  keep_daily: 7
+  keep_weekly: 4
+  keep_monthly: 12
+  keep_yearly: 2
+
+# Alert Configuration
+alerts:
+  enabled: true
+  webhook_url: null
+  smtp_host: null
+  smtp_port: 587
+  smtp_user: null
+  alert_email: null
+  alertmanager_url: null
+
+# Recovery Settings
+recovery_dir: /var/lib/proxmox-dr/recovery
+dry_run: false
+max_parallel_verification: 4
+verification_timeout: 3600
+
+# State Management
+state_file: /var/lib/proxmox-dr/state.json
+history_file: /var/lib/proxmox-dr/history.jsonl

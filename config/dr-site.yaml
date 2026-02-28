@@ -1,0 +1,23 @@
+# DR Site (Disaster Recovery Site) Configuration
+environment: dr-site
+
+pbs_main:
+  name: pbs-main-dr
+  host: 10.0.1.100
+  datastore: pbs-backups
+
+pbs_dr:
+  name: pbs-dr-dr
+  host: 10.0.1.101
+  datastore: pbs-replica
+
+sync:
+  schedule: "0 1 * * *"
+  delete_missing: true
+
+alerts:
+  enabled: true
+
+# DR site has more aggressive verification
+max_parallel_verification: 8
+verification_timeout: 7200

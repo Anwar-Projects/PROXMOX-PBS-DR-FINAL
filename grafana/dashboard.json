@@ -1,0 +1,107 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Proxmox PBS DR Monitoring",
+    "tags": ["proxmox", "disaster-recovery", "backup"],
+    "timezone": "browser",
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "DR Phase Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "proxmox_dr_phase",
+            "legendFormat": "{{phase}}"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 4, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Backup Success Rate (24h)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "(sum(increase(proxmox_dr_backup_success_total[24h])) / sum(increase(proxmox_dr_backup_total[24h]))) * 100",
+            "format": "percentunit"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 4, "x": 4, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Sync Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "proxmox_dr_last_sync_timestamp",
+            "legendFormat": "Last Sync"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 4, "x": 8, "y": 0}
+      },
+      {
+        "id": 4,
+        "title": "Storage Usage",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "proxmox_dr_storage_usage_percent",
+            "legendFormat": "{{datastore}}"
+          }
+        ],
+        "gridPos": {"h": 4, "w": 4, "x": 12, "y": 0}
+      },
+      {
+        "id": 5,
+        "title": "Recent Backup Activity",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(proxmox_dr_backup_duration_seconds[5m])",
+            "legendFormat": "{{vm_id}}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4}
+      },
+      {
+        "id": 6,
+        "title": "Verification Status",
+        "type": "table",
+        "targets": [
+          {
+            "expr": "proxmox_dr_backup_verification_status",
+            "format": "table"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4}
+      },
+      {
+        "id": 7,
+        "title": "Active Alerts",
+        "type": "alertlist",
+        "options": {
+          "alertName": "PBS"
+        },
+        "gridPos": {"h": 4, "w": 24, "x": 0, "y": 12}
+      }
+    ],
+    "time": {"from": "now-6h", "to": "now"},
+    "templating": {
+      "list": [
+        {
+          "name": "datasource",
+          "type": "datasource",
+          "query": "prometheus"
+        },
+        {
+          "name": "site",
+          "type": "query",
+          "query": "label_values(proxmox_dr_phase, site)"
+        }
+      ]
+    }
+  }
+}

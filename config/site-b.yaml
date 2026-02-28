@@ -1,0 +1,19 @@
+# Site B (Secondary Site) Configuration
+environment: site-b
+
+pbs_main:
+  name: pbs-main-site-b
+  host: 192.168.2.100
+  datastore: pbs-backups
+
+pbs_dr:
+  name: pbs-dr-site-b
+  host: 192.168.2.101
+  datastore: pbs-replica
+
+sync:
+  schedule: "0 3 * * *"
+  delete_missing: false
+
+alerts:
+  enabled: true

@@ -1,0 +1,10 @@
+proxmox-pbs-dr (1.0.0) unstable; urgency=medium
+
+  * Initial release
+  * Async DR orchestration with state machine
+  * Parallel backup verification
+  * Prometheus metrics export
+  * Multi-environment configuration support
+  * Workflow DAG for complex recovery scenarios
+
+ -- Proxmox DR Team <dr-team@example.com>  $(date -R)

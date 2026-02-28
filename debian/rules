@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE = 1
+export PYBUILD_NAME = proxmox-dr
+
+%:
+	dh $@ --with python3
+
+override_dh_auto_install:
+	python3 setup.py install --root=$(CURDIR)/debian/proxmox-pbs-dr --install-layout=deb
+
+override_dh_auto_clean:
+	python3 setup.py clean -a
+	dh_auto_clean
+
+override_dh_installsystemd:
+	dh_installsystemd --name=proxmox-dr --no-restart-after-upgrade
+	dh_installsystemd --name=proxmox-dr-exporter --no-restart-after-upgrade

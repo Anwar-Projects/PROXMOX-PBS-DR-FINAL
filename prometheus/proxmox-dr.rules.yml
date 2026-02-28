@@ -1,0 +1,58 @@
+groups:
+  - name: proxmox-dr
+    rules:
+      # Backup health alerts
+      - alert: PBSBackupStale
+        expr: time() - proxmox_dr_last_backup_timestamp > 86400 * 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PBS backup is stale"
+          description: "Backup for {{ $labels.vm_id }} is more than 2 days old"
+
+      - alert: PBSBackupVerificationFailed
+        expr: proxmox_dr_backup_verification_status == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backup verification failed"
+          description: "Backup verification failed for {{ $labels.vm_id }}"
+
+      - alert: PBSSyncFailed
+        expr: increase(proxmox_dr_sync_failures_total[5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PBS sync failed"
+          description: "PBS sync from {{ $labels.source }} to {{ $labels.target }} failed"
+
+      - alert: DRFailoverInProgress
+        expr: proxmox_dr_phase != "idle" and proxmox_dr_phase != "completed" and proxmox_dr_phase != "failed"
+        for: 1m
+        labels:
+          severity: info
+        annotations:
+          summary: "DR failover in progress"
+          description: "DR is in phase {{ $labels.phase }}"
+
+      - alert: DRFailoverFailed
+        expr: proxmox_dr_phase == "failed"
+        for: 1m
+        labels:
+          severity: emergency
+        annotations:
+          summary: "DR failover failed"
+          description: "DR failover has failed and requires immediate attention"
+
+      # Resource usage
+      - alert: PBSStorageLow
+        expr: proxmox_dr_storage_usage_percent > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PBS storage is running low"
+          description: "PBS storage usage is {{ $value }}%"

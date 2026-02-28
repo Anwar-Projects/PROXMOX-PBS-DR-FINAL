@@ -1,0 +1,19 @@
+# Site A (Primary Site) Configuration
+environment: site-a
+
+pbs_main:
+  name: pbs-main-site-a
+  host: 192.168.1.100
+  datastore: pbs-backups
+
+pbs_dr:
+  name: pbs-dr-site-a
+  host: 192.168.1.101
+  datastore: pbs-replica
+
+sync:
+  schedule: "0 2 * * *"
+  delete_missing: false
+
+alerts:
+  enabled: true
